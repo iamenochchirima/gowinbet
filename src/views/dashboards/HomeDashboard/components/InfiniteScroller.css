@@ -1,0 +1,40 @@
+.scroller {
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.scroller__inner {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1.25rem; /* Matches gap-5 (1.25rem = 20px) */
+  width: max-content;
+}
+
+.scroller[data-animated="true"] {
+  overflow: hidden;
+  /* -webkit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent); */
+  /* mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent); */
+}
+
+.scroller[data-animated="true"] .scroller__inner {
+  animation: scroll 50s linear infinite;
+}
+
+/* Direction-specific animations */
+.scroller[data-direction="left"] .scroller__inner {
+  animation-direction: normal;
+}
+
+.scroller[data-direction="right"] .scroller__inner {
+  animation-direction: reverse;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-2000px); /* Fixed distance */
+  }
+}
