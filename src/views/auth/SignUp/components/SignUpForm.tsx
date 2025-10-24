@@ -160,18 +160,15 @@ const SignUpForm = (props: SignUpFormProps) => {
                         )}
                     />
                 </FormItem>
-                <div className="flex justify-center">
-                    <div className="max-w-[200px] w-full">
-                        <Button
-                            block
-                            loading={isSubmitting}
-                            variant="solid"
-                            type="submit"
-                        >
-                            {isSubmitting ? 'Creating Account...' : 'Sign Up'}
-                        </Button>
-                    </div>
-                </div>
+                <Button
+                    block
+                    loading={isSubmitting}
+                    variant="solid"
+                    type="submit"
+                    className="bg-[#FFA500] hover:bg-[#FF8C00] text-black font-semibold"
+                >
+                    {isSubmitting ? 'Creating Account...' : 'Sign Up'}
+                </Button>
             </Form>
         </div>
     )

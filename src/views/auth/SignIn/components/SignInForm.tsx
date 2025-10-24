@@ -112,18 +112,15 @@ const SignInForm = (props: SignInFormProps) => {
                     />
                 </FormItem>
                 {passwordHint}
-                <div className="flex justify-center">
-                    <div className="max-w-[200px] w-full">
-                        <Button
-                            block
-                            loading={isSubmitting}
-                            variant="solid"
-                            type="submit"
-                        >
-                            {isSubmitting ? 'Signing in...' : 'Sign In'}
-                        </Button>
-                    </div>
-                </div>
+                <Button
+                    block
+                    loading={isSubmitting}
+                    variant="solid"
+                    type="submit"
+                    className="bg-[#FFA500] hover:bg-[#FF8C00] text-black font-semibold"
+                >
+                    {isSubmitting ? 'Signing in...' : 'Sign In'}
+                </Button>
             </Form>
         </div>
     )

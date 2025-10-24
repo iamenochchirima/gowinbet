@@ -2,7 +2,6 @@ import { useRef, useImperativeHandle, forwardRef, useEffect } from 'react'
 import AuthContext from './AuthContext'
 import appConfig from '@/configs/app.config'
 import { useSessionUser } from '@/store/authStore'
-import { apiMe, apiSignIn, apiSignOut, apiSignUp } from '@/services/AuthService'
 import { REDIRECT_URL_KEY } from '@/constants/app.constant'
 import { useNavigate } from 'react-router-dom'
 import type {
@@ -34,23 +33,14 @@ const IsolatedNavigator = forwardRef<IsolatedNavigatorRef>((_, ref) => {
 })
 function AuthProvider({ children }: AuthProviderProps) {
     const signedIn = useSessionUser((state) => state.session.signedIn)
-    const { selectedPackage , setSelectedPackage} = useSessionUser((state) => state);
+    const { setSelectedPackage} = useSessionUser((state) => state);
     const user = useSessionUser((state) => state.user)
     const setUser = useSessionUser((state) => state.setUser)
     const setSessionSignedIn = useSessionUser(
         (state) => state.setSessionSignedIn,
     )
 
-
     const authenticated = Boolean(signedIn)
-
-    const navigate = useNavigate();
-
-    // useEffect(() => {
-    //     if (selectedPackage && authenticated) {
-    //         navigate("/subscribe");
-    //     }
-    // }, [selectedPackage, navigate, authenticated]);
 
     useEffect(() => {
         checkAuth()
@@ -58,9 +48,10 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     const checkAuth = async () => {
         try {
-            const res = await apiMe()
-            if (res) {
-                handleSignIn(res)
+            const storedUser = localStorage.getItem('gowinbet_user')
+            if (storedUser) {
+                const user = JSON.parse(storedUser)
+                handleSignIn(user)
             } else {
                 handleSignOut()
             }
@@ -95,55 +86,99 @@ function AuthProvider({ children }: AuthProviderProps) {
 
     const signIn = async (values: SignInCredential): AuthResult => {
         try {
-            const resp = await apiSignIn(values)
-            if (resp) {
-                handleSignIn(resp)
+            const storedUsers = localStorage.getItem('gowinbet_users')
+            const users = storedUsers ? JSON.parse(storedUsers) : []
+
+            const user = users.find((u: any) =>
+                u.email === values.email && u.password === values.password
+            )
+
+            if (user) {
+                const mockUser: User = {
+                    email: user.email,
+                    firstname: user.firstname,
+                    lastname: user.lastname,
+                    avatar: '',
+                    authority: ['USER'],
+                    subscription: null,
+                    isEmailVerified: true,
+                }
+
+                localStorage.setItem('gowinbet_user', JSON.stringify(mockUser))
+                handleSignIn(mockUser)
                 redirect()
                 return {
                     status: 'success',
                     message: '',
                 }
             }
+
             return {
                 status: 'failed',
-                message: 'Unable to sign in',
+                message: 'Invalid email or password',
             }
         } catch (errors: any) {
             return {
                 status: 'failed',
-                message: errors?.response?.data?.message || errors.toString(),
+                message: errors?.toString() || 'Unable to sign in',
             }
         }
     }
 
     const signUp = async (values: SignUpCredential): AuthResult => {
         try {
-            const resp = await apiSignUp(values)
-            if (resp) {
-                handleSignIn(resp)
-                redirect()
+            const storedUsers = localStorage.getItem('gowinbet_users')
+            const users = storedUsers ? JSON.parse(storedUsers) : []
+
+            const existingUser = users.find((u: any) => u.email === values.email)
+            if (existingUser) {
                 return {
-                    status: 'success',
-                    message: '',
+                    status: 'failed',
+                    message: 'Email already registered',
                 }
             }
-            return {
-                status: 'failed',
-                message: 'Unable to sign up',
+
+            const newUser = {
+                id: Date.now().toString(),
+                email: values.email,
+                password: values.password,
+                firstname: values.firstname,
+                lastname: values.lastname,
             }
-            // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+
+            users.push(newUser)
+            localStorage.setItem('gowinbet_users', JSON.stringify(users))
+
+            const mockUser: User = {
+                email: newUser.email,
+                firstname: newUser.firstname,
+                lastname: newUser.lastname,
+                avatar: '',
+                authority: ['USER'],
+                subscription: null,
+                isEmailVerified: true,
+            }
+
+            localStorage.setItem('gowinbet_user', JSON.stringify(mockUser))
+            handleSignIn(mockUser)
+            redirect()
+
+            return {
+                status: 'success',
+                message: '',
+            }
         } catch (errors: any) {
             return {
                 status: 'failed',
-                message: errors?.response?.data?.message || errors.toString(),
+                message: errors?.toString() || 'Unable to sign up',
             }
         }
     }
 
     const signOut = async () => {
         try {
-            setSelectedPackage(null);
-            await apiSignOut()
+            setSelectedPackage(null)
+            localStorage.removeItem('gowinbet_user')
         } finally {
             handleSignOut()
             navigatorRef.current?.navigate(appConfig.unAuthenticatedEntryPath)

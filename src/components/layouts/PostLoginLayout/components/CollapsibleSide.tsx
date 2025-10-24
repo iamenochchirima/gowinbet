@@ -12,31 +12,9 @@ import { LAYOUT_COLLAPSIBLE_SIDE } from '@/constants/theme.constant'
 import type { CommonProps } from '@/@types/common'
 import Buttons from './Buttons'
 import MenuSection from './MenuSection'
-import { useSessionUser } from '@/store/authStore'
-import { useEffect, useState } from 'react'
-import SubscribeModal from '@/views/general/Subscribe/components/SubscribeModal'
 
 const CollapsibleSide = ({ children }: CommonProps) => {
     const { larger, smaller } = useResponsive()
-    const [subscribeModalOpen, setSubscribeModalOpen] = useState(false)
-    const { selectedPackage, setSelectedPackage, user } = useSessionUser((state) => state)
-    useEffect(() => {
-        if (selectedPackage && !user.subscription?.priceId) {
-            setSubscribeModalOpen(true)
-        }
-    }, [selectedPackage, user])
-
-    useEffect(() => {
-        if (!user.subscription?.priceId) {
-            setSubscribeModalOpen(true)
-        }
-    }, [user])
-
-
-    const handleSubscribeClose = () => {
-        setSubscribeModalOpen(false)
-        setSelectedPackage(null)
-    }
 
     return (
         <LayoutBase
@@ -58,8 +36,6 @@ const CollapsibleSide = ({ children }: CommonProps) => {
                         }
                         headerEnd={
                             <>
-                                <SubscribeModal subscribeModalOpen={subscribeModalOpen} handleClose={handleSubscribeClose} />
-                                {/* <LanguageSelector /> */}
                                 <div className="xs2:flex hidden items-center gap-2">
                                     <div className="2md:hidden"><Search /></div>
                                     <SidePanel />

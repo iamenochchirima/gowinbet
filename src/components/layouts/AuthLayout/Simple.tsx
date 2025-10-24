@@ -1,7 +1,7 @@
 import { cloneElement } from 'react'
-import Container from '@/components/shared/Container'
 import type { ReactNode, ReactElement } from 'react'
 import type { CommonProps } from '@/@types/common'
+import TopBar from '../PostLoginLayout/components/TopBar'
 
 interface SimpleProps extends CommonProps {
     content?: ReactNode
@@ -9,20 +9,20 @@ interface SimpleProps extends CommonProps {
 
 const Simple = ({ children, content, ...rest }: SimpleProps) => {
     return (
-        <div className="h-full bg-white dark:bg-gray-800">
-            <Container className="flex flex-col flex-auto items-center justify-center min-w-0 h-full">
-                <div className="min-w-[320px] md:min-w-[400px] max-w-[400px]">
-                    <div>
-                        {content}
-                        {children
-                            ? cloneElement(children as ReactElement, {
-                                  contentClassName: 'text-center',
-                                  ...rest,
-                              })
-                            : null}
-                    </div>
+        <div className="flex flex-col items-center h-full bg-none bg-[url('/bg_lines.png')] bg-right bg-cover bg-no-repeat">
+            <div className="w-full justify-center flex">
+                <TopBar />
+            </div>
+            <div className="flex flex-col justify-center items-center h-full p-6">
+                <div className="xl:max-w-[500px] px-1 md3:max-w-[380px] w-[340px] xs1:w-[380px] xs:w-[500px]">
+                    <div className="mb-8">{content}</div>
+                    {children
+                        ? cloneElement(children as ReactElement, {
+                              ...rest,
+                          })
+                        : null}
                 </div>
-            </Container>
+            </div>
         </div>
     )
 }
