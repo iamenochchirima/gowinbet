@@ -22,6 +22,16 @@ export default defineConfig({
     }
   },
   build: {
-    outDir: 'build'
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': ['framer-motion', 'classnames'],
+          'chart-vendor': ['echarts', 'echarts-for-react', 'recharts'],
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000,
   }
 })
