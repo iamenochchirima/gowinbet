@@ -12,6 +12,7 @@ import type { CommonProps } from '@/@types/common'
 import type { JSX, LazyExoticComponent } from 'react'
 import type { LayoutType } from '@/@types/theme'
 import TopBar from './components/TopBar'
+import BettingLayout from './components/BettingLayout'
 import { useSessionUser } from '@/store/authStore'
 
 type Layouts = Record<
@@ -35,22 +36,15 @@ const layouts: Layouts = {
 }
 
 const PostLoginLayout = ({ layoutType, children }: PostLoginLayoutProps) => {
-    // const { selectedPackage} = useSessionUser((state) => state)
-
-    // const AppLayout = selectedPackage ?  layouts[Object.keys(layouts)[4]] : layouts[Object.keys(layouts)[0]]
-    const AppLayout =  layouts[Object.keys(layouts)[0]]
-
     return (
-        <Suspense fallback={(
-            <div className="flex flex-auto flex-col h-[100vh]">
-                <Loading loading={true} />
-            </div>
-        )}>
+        <div className="flex flex-col h-screen overflow-hidden">
             <TopBar />
-            <AppLayout >
-                {children}
-            </AppLayout>
-        </Suspense>
+            <div className="flex-1 overflow-hidden">
+                <BettingLayout>
+                    {children}
+                </BettingLayout>
+            </div>
+        </div>
     )
 }
 
