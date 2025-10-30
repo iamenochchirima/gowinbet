@@ -1,6 +1,5 @@
 import { Suspense } from 'react'
 import Container from '@/components/shared/Container'
-import Footer from '@/components/template/Footer'
 import useLayout from '@/utils/hooks/useLayout'
 import classNames from '@/utils/classNames'
 import {
@@ -9,7 +8,6 @@ import {
 } from '@/constants/theme.constant'
 import type { CommonProps } from '@/@types/common'
 import type { Meta, PageHeaderProps } from '@/@types/routes'
-import type { FooterPageContainerType } from '@/components/template/Footer'
 import type { ReactNode, ElementType, ComponentPropsWithRef } from 'react'
 
 export interface PageContainerProps extends CommonProps, Meta {
@@ -103,9 +101,6 @@ export const PageContainerFooter = ({
 }: PageContainerFooterProps) => {
     if (!footer) return null
 
-    return (
-        <Footer className={className} pageContainerType={pageContainerType} />
-    )
 }
 
 const PageContainer = (props: PageContainerProps) => {
@@ -163,12 +158,7 @@ const PageContainer = (props: PageContainerProps) => {
                             </PageContainerBody>
                         </div>
                     </main>
-                    <PageContainerFooter
-                        footer={footer}
-                        pageContainerType={
-                            pageContainerType as FooterPageContainerType
-                        }
-                    />
+                    
                 </div>
             )}
         </>
